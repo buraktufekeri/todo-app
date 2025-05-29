@@ -1,0 +1,75 @@
+version: '3.8'
+
+services:
+  couchbase:
+    image: couchbase:community-7.6.2
+    container_name: couchbase
+    ports:
+      - "8091-8096:8091-8096"
+      - "11210:11210"
+    environment:
+      - COUCHBASE_ADMIN_USERNAME=admin
+      - COUCHBASE_ADMIN_PASSWORD=password
+    volumes:
+      - couchbase_data:/opt/couchbase/var
+    networks:
+      - backend
+
+  cb-setup:
+    image: couchbase:community-7.6.2
+    container_name: couchbase-setup
+    depends_on:
+      - couchbase
+    entrypoint: ["/bin/bash", "-c"]
+    command:
+      - >
+        sleep 20 &&
+        /opt/couchbase/bin/couchbase-cli cluster-init -c couchbase:8091
+        --cluster-username admin
+        --cluster-password password
+        --cluster-name TodoAppCluster
+        --services data,index,query
+        --cluster-ramsize 512
+        --cluster-index-ramsize 256 &&
+
+        curl -u admin:password -X POST http://couchbase:8091/pools/default -d 'max_collections=200' &&
+
+        /opt/couchbase/bin/couchbase-cli bucket-create -c couchbase:8091
+        --username admin
+        --password password
+        --bucket todo-bucket
+        --bucket-type couchbase
+        --bucket-ramsize 256
+    restart: "no"
+    networks:
+      - backend
+
+  todo-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: todo-app
+    depends_on:
+      - couchbase
+      - cb-setup
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    environment:
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=password
+      - COUCHBASE_CONNECTION_STRING=couchbase://couchbase
+      - COUCHBASE_USERNAME=admin
+      - COUCHBASE_PASSWORD=password
+      - COUCHBASE_BUCKET_NAME=todo-bucket
+      - JWT_SECRET=B/PZbpRVqPxdR2VocVwbg1qVjZy9NXkOawnjWKXC4zY=
+    networks:
+      - backend
+
+volumes:
+  couchbase_data:
+
+networks:
+  backend:
+    driver: bridge
+
