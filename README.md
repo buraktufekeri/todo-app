@@ -71,7 +71,7 @@ Bu sayede, uygulama ilk açıldığında temel yetkilendirme sistemi ve yönetic
 - Bu yöntemle, hem Couchbase Server hem de uygulama container olarak çalışır.  
 **Adımlar:**
 1. Projeyi klonlayın:
-   - git clone https://github.com/kullaniciadi/todo-app.git
+   - git clone https://github.com/buraktufekeri/todo-app
    - cd todo-app
 2. Docker Compose ile başlatın
    - docker compose up --build
@@ -145,5 +145,5 @@ Bu sayede, uygulama ilk açıldığında temel yetkilendirme sistemi ve yönetic
 - Bu proje Burak Tüfekeri tarafından geliştirilmiştir.
 - Herhangi bir sorunuz ya da öneriniz için iletişime geçebilirsiniz.
 - **Email:** buraktufekeri@gmail.com
-- **GitHub:** https://github.com/kullaniciadi/todo-app
+- **GitHub:** https://github.com/buraktufekeri/todo-app
 - **Docker:** https://hub.docker.com/repository/docker/buraktufekeri123456/todo-app
