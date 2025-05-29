@@ -5,9 +5,6 @@ target/
 !**/src/test/**/target/
 .DS_Store
 Thumbs.db
-.mvn
-mvnw
-mvnw.cmd
 
 ### STS ###
 .apt_generated
